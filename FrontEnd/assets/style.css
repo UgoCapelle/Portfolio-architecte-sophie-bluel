@@ -129,24 +129,24 @@ li:hover {
 .filtres {
     display: flex;
     align-items: center;
-    justify-content: center; /* Centre les éléments horizontalement */
-    gap: 10px; /* Définit une distance constante entre les éléments */
+    justify-content: center; 
+    gap: 10px; 
 }
 
 .boutons {
     display: inline-block;
     font-family: 'Syne';
     font-weight: 700;
-    color: #1D6154; /* Texte vert */
-    background-color: white; /* Fond blanc */
-    border: 1px solid #1D6154; /* Contour vert */
-    margin: 40px 0px 20px 0px; /* Ajusté pour supprimer la marge gauche et centrage horizontal */
-    padding: 0 20px; /* Ajouter du padding horizontal pour un espace autour du texte */
+    color: #1D6154; 
+    background-color: white;
+    border: 1px solid #1D6154;
+    margin: 40px 0px 20px 0px;
+    padding: 0 20px;
     text-align: center;
     border-radius: 60px;
     min-height: 37px;
-    line-height: 37px; /* Ajusté pour aligner le texte verticalement */
-    transition: background-color 0.3s, color 0.3s; /* Ajouté pour une transition douce */
+    line-height: 37px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .boutons:hover {
