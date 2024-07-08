@@ -4,38 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
     <title>Connexion</title>
     <link rel="stylesheet" href="./assets/style.css">
 </head>
-<body>
+<body class="login-page">
 <header>
-	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
-	<nav>
-		<ul>
-			<li>projets</li>
-			<li>contact</li>
-			<li class="lilogin">login</li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-		</ul>
-	</nav>
+    <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+    <nav>
+        <ul>
+            <li>projets</li>
+            <li>contact</li>
+            <li class="lilogin">login</li>
+            <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+        </ul>
+    </nav>
 </header>
 <h2 class="h2log">Log In</h2>
-    <section id="login">
+<section id="login">
+    <form>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
         
-        <form>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" required>
-            
-            <input type="submit" value="Se connecter">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" required>
+        
+        <input type="submit" value="Se connecter">
 
-            <a href="#" class="forgot-password">Mot de passe oublié</a>
-        </form>
-    </section>
-    
+        <div id="error-message"></div>
+        
+        <a href="#" class="forgot-password">Mot de passe oublié</a>
+
+    </form>
+</section>
+<footer>
+    <nav>
+        <ul>
+            <li>Mentions Légales</li>
+        </ul>
+    </nav>
+</footer>
+
+<script src="./scripts/login.js"></script>
 </body>
 </html>

@@ -89,6 +89,7 @@ nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
+	gap: 35px;
 
 }
 nav li {
@@ -99,9 +100,20 @@ nav li {
 li:hover {
 	color: #B1663C;
 }
+
+nav li a {
+	text-decoration: none; 
+	color: inherit; 
+}
+
+nav li a:hover {
+	color: #B1663C;
+}
+
 #introduction {
 	display: flex;
 	align-items: center;
+	margin-bottom: 10%;
 }
 #introduction figure {
 	flex: 1
@@ -175,7 +187,8 @@ li:hover {
 }
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
+	margin-top: 10%;
 }
 #contact > * {
 	text-align: center;
@@ -297,6 +310,120 @@ section {
     cursor: pointer;
 }
 
+#error-message {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
 .forgot-password:hover {
     color: #B1663C;
+}
+
+body.login-page footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #FFFFFF;
+    text-align: center;
+    padding: 1px 0; 
+    border-top: 1px solid #eaeaea;
+}
+
+/* Banniere admin */
+
+#admin-banner {
+    display: none; 
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#admin-banner.active {
+    display: block; 
+}
+
+/* Style de la modale */
+
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.5); 
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    max-width: 630px; 
+    max-height: 688px; 
+    width: 100%; 
+    height: 100%; 
+    padding: 20px;
+    border: 1px solid #888;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow: auto; 
+    margin: auto; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+}
+
+.modal-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.modal-content .gallery-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.modal-content .gallery-images > div {
+    width: calc(20% - 20px); 
+    margin: 10px; /* Marge image */
+    text-align: center; 
+}
+
+/* Styles pour le formulaire d'ajout de photo */
+#addPhotoForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#addPhotoForm label {
+    margin: 10px 0 5px;
+}
+
+#addPhotoForm input, #addPhotoForm select, #addPhotoForm button {
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 80%;
+    font-size: 1em;
+}
+
+#addPhotoForm button {
+    background-color: #1D6154;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#addPhotoForm button:hover {
+    background-color: #B1663C;
 }
