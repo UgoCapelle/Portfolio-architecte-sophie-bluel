@@ -1,16 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Debug token from session:', sessionStorage.getItem('debug_token'));
+    console.log('Token from localStorage:', localStorage.getItem('token'));
+    console.log('Main script loaded. Token:', localStorage.getItem('token'));
     let isAdmin = false;
     const adminBanner = document.getElementById('admin-banner');
     const openModalButtons = document.querySelectorAll('.open-modal');
+  
+    if (window.location.search.includes('login=true')) {
+      console.log('Page loaded after login. Token:', localStorage.getItem('token'));
+    }
 
     // Vérification du statut d'authentification et du rôle d'administrateur
-    const token = localStorage.getItem('token');
-    if (token) {
-        fetch('http://localhost:5678/api/users/me', {
+    const token = sessionStorage.getItem('debug_token') || localStorage.getItem('token') || '';    if (token) {
+        fetch('http://localhost:5678/api/works', {
             headers: {
-                Authorization: `Bearer ${token}`
+              'Authorization': `Bearer ${token}`
             }
-        })
+          })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Not authorized');
@@ -20,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(user => {
             isAdmin = user.isAdmin;
             if (isAdmin) {
-                adminBanner.style.display = 'block';
+                adminBanner.classList.add('active');
                 openModalButtons.forEach(button => {
                     button.style.display = 'inline';
                 });
@@ -46,11 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Création du menu de catégories
     function creerMenuDeCategories(travaux) {
-        const categories = new Set();
-        categories.add('Tous');
-        travaux.forEach(travail => {
-            categories.add(travail.category.name);
-        });
+        const categories = new Set(['Tous']);
+        travaux.forEach(travail => categories.add(travail.category.name));
 
         const filtres = document.querySelector('.filtres');
         filtres.innerHTML = '';
@@ -63,8 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filtres.appendChild(li);
         });
 
-        const boutonTous = filtres.querySelector('li');
-        boutonTous.classList.add('bouton-active');
+        filtres.querySelector('li').classList.add('bouton-active');
     }
 
     // Filtrage des travaux par catégorie
@@ -84,11 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
             galerie.appendChild(figure);
         });
 
-        const boutons = document.querySelectorAll('.filtres .boutons');
-        boutons.forEach(bouton => bouton.classList.remove('bouton-active'));
-
-        const boutonActif = Array.from(boutons).find(bouton => bouton.textContent === categorie);
-        boutonActif.classList.add('bouton-active');
+        document.querySelectorAll('.filtres .boutons').forEach(bouton => bouton.classList.remove('bouton-active'));
+        Array.from(document.querySelectorAll('.filtres .boutons')).find(bouton => bouton.textContent === categorie).classList.add('bouton-active');
     }
 
     // Ajout des travaux à la galerie principale

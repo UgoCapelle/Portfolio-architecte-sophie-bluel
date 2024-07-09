@@ -22,8 +22,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 console.log("Token received:", responseData.token);
                 localStorage.setItem("token", responseData.token);
+                localStorage.setItem("tokenSetTime", new Date().toISOString());
                 console.log("Token saved in localStorage:", localStorage.getItem("token"));
-                window.location.href = "index.html";
+                sessionStorage.setItem('debug_token', responseData.token);
+                window.location.href = "index.html?login=true";
             } else {
                 switch (response.status) {
                     case 401:

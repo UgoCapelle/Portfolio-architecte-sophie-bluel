@@ -398,6 +398,38 @@ body.login-page footer {
     text-align: center; 
 }
 
+.modal-content .gallery-images .work-item {
+    position: relative;
+    width: calc(20% - 20px);
+    margin: 10px;
+  }
+  
+  .modal-content .gallery-images .work-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .modal-content .gallery-images .delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 17px;
+    height: 17px;
+    background-color: black;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+  
+  .modal-content .gallery-images .delete-button i {
+    color: white;
+    font-size: 10px;
+  }
+
 /* Styles pour le formulaire d'ajout de photo */
 #addPhotoForm {
     display: flex;
