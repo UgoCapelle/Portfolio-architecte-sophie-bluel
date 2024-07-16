@@ -565,16 +565,46 @@ hr {
     font-size: 1em;
 }
 
-#addPhotoForm button {
+#addPhotoForm button[type="submit"] {
+    background-color: #a7a7a7;
+    cursor: not-allowed;
+}
+
+#addPhotoForm:valid button[type="submit"] {
     background-color: #1D6154;
+    cursor: pointer;
+}
+
+#addPhotoForm button {
+    font-family: 'Syne';
+    font-weight: 700;
+    font-size: 16px;
     color: white;
+    background-color: #1D6154;
+    margin: 20px auto; 
+    margin-top: 50px;
+    width: 280px;
+    text-align: center;
+    border-radius: 60px;
+    height: 40px; 
     border: none;
-    border-radius: 4px;
     cursor: pointer;
 }
 
 #addPhotoForm button:hover {
     background-color: #B1663C;
+}
+
+#addPhotoForm input[type="text"],
+#addPhotoForm select {
+    border: none;
+    width: 420px;
+    box-sizing: border-box;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+#addPhotoForm select {
+    appearance: none; 
 }
 
 /* Style pour le bouton dans le rectangle de la section Ajout photo */

@@ -75,6 +75,7 @@ function showAddPhotoForm() {
             <input type="text" id="photoTitle" name="title" required>
             <label for="photoCategory">Catégorie</label>
             <select id="photoCategory" name="category" required></select>
+            <hr>
             <button type="submit">Valider</button>
         </form>
     `;
