@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
+    <div id="admin-banner"><i class="fa-solid fa-pen-to-square"></i>Mode édition</div>
 <header>
-    <div id="admin-banner" class="hidden">Mode Administrateur Activé</div>
     <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
     <nav>
         <ul>
@@ -37,12 +37,15 @@
         </article>
     </section>
     <section id="portfolio">
-        <h2>Mes Projets</h2>
-        <button id="openModalButton">Ouvrir la modale</button>
+        <div class="title-container">
+            <h2>Mes Projets</h2>
+            <button id="openModalButton">
+                <i class="fas fa-pen-to-square"></i> modifier
+            </button>
+        </div>
         <div id="modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <p>Contenu de la modale...</p>
             </div>
         </div>
         <ul class="filtres">
@@ -55,6 +58,7 @@
             <div class="gallery-images"></div>
         </div>
     </section>
+    
     <section id="contact">
         <h2>Contact</h2>
         <p>Vous avez un projet ? Discutons-en !</p>

@@ -330,33 +330,83 @@ body.login-page footer {
     border-top: 1px solid #eaeaea;
 }
 
-/* Banniere admin */
+.hidden {
+    display: none;
+}
 
+.modal-visible {
+    display: block !important;
+}
+
+
+.gallery-images {
+    display: none;
+}
+
+
+.modal .gallery-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+/* Banniere admin */
 #admin-banner {
-    display: none; 
     background-color: black;
     color: white;
     text-align: center;
     padding: 10px 0;
-    font-size: 16px;
-    font-weight: bold;
+    font-family: 'Work Sans';
+    font-size: 14px;
+    width: 100%; 
+    position: fixed; 
+    top: 0; 
+    z-index: 1000; 
+    left: 0; 
 }
 
-#admin-banner.active {
-    display: block; 
+#admin-banner i {
+    color: white;
+    margin-right: 5px;
 }
+
 
 /* Style de la modale */
 
+.title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1em;
+}
+
+.title-container h2 {
+    margin-right: 10px; /* Espace entre le titre et le bouton */
+}
+
+#openModalButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Work Sans';
+    font-size: 14px;
+    color: black;
+    margin-top: -20px;
+    margin-right: -70px;
+}
+
 .modal {
-    display: none; 
+    display: none;
     position: fixed;
-    z-index: 1000; 
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0, 0, 0, 0.5); 
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     overflow: auto;
     display: flex;
     align-items: center;
@@ -365,20 +415,38 @@ body.login-page footer {
 
 .modal-content {
     background-color: #fefefe;
-    max-width: 630px; 
-    max-height: 688px; 
-    width: 100%; 
-    height: 100%; 
+    width: 630px; 
+    height: 688px; 
     padding: 20px;
     border: 1px solid #888;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    overflow: auto; 
-    margin: auto; 
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+}
+
+/* Style pour la croix de fermeture */
+.modal-content .close {
+    position: absolute;
+    top: 15px; 
+    right: 10px; 
+    font-size: 24px; 
+    cursor: pointer;
+    color: #000; 
+}
+
+.modal-content .close:hover {
+    color: #B1663C; 
+}
+
+.modal-content h3 {
+    font-size: 2em; 
+    padding-top: 50px;
 }
 
 .modal-content img {
@@ -390,27 +458,30 @@ body.login-page footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    max-width: 500px;
+    padding-top: 50px;
+    padding-left: 75px;
 }
 
 .modal-content .gallery-images > div {
-    width: calc(20% - 20px); 
-    margin: 10px; /* Marge image */
-    text-align: center; 
+    width: auto; 
+    margin: 10px; 
+    text-align: center;
 }
 
 .modal-content .gallery-images .work-item {
     position: relative;
-    width: calc(20% - 20px);
-    margin: 10px;
-  }
-  
-  .modal-content .gallery-images .work-item img {
-    width: 100%;
-    height: auto;
+    width: auto; 
+    margin: 10px; 
+}
+
+.modal-content .gallery-images .work-item img {
+    width: 76px; 
+    height: 102px; 
     display: block;
-  }
-  
-  .modal-content .gallery-images .delete-button {
+}
+
+.modal-content .gallery-images .delete-button {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -423,14 +494,58 @@ body.login-page footer {
     justify-content: center;
     align-items: center;
     padding: 0;
-  }
-  
-  .modal-content .gallery-images .delete-button i {
+}
+
+.modal-content .gallery-images .delete-button i {
     color: white;
     font-size: 10px;
-  }
+}
+
+hr {
+    margin-top: 70px;
+    width: 70%;
+    color: #B3B3B3;
+}
+
+#addPhotoButton {
+    font-family: 'Syne';
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    background-color: #1D6154;
+    margin: 20px auto; 
+    width: 280px;
+    text-align: center;
+    border-radius: 60px;
+    height: 40px; 
+    border: none;
+    cursor: pointer;
+}
+
+#addPhotoButton:hover {
+    background-color: #B1663C;
+}
 
 /* Styles pour le formulaire d'ajout de photo */
+
+#backToGalleryButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Work Sans';
+    font-size: 16px;
+    color: black;
+    margin-top: 0px; 
+    margin-left: 0px; 
+}
+
+#backToGalleryButton:hover {
+    color: #B1663C;
+}
+
 #addPhotoForm {
     display: flex;
     flex-direction: column;
@@ -439,6 +554,7 @@ body.login-page footer {
 
 #addPhotoForm label {
     margin: 10px 0 5px;
+    text-align: left;
 }
 
 #addPhotoForm input, #addPhotoForm select, #addPhotoForm button {
@@ -458,4 +574,53 @@ body.login-page footer {
 
 #addPhotoForm button:hover {
     background-color: #B1663C;
+}
+
+/* Style pour le bouton dans le rectangle de la section Ajout photo */
+#rectangleZone {
+    width: 420px;
+    height: 169px;
+    background-color: #E8F1F6;
+    margin: 0 auto; 
+    margin-bottom: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#rectangleZone img {
+    max-height: 100%; 
+    max-width: 100%; 
+    object-fit: contain; 
+}
+
+#imageIcon {
+    font-size: 70px; 
+    margin-bottom: 10px; 
+}
+
+#customFileButton {
+    font-family: 'Work Sans';
+    font-weight: 500;
+    font-size: 16px;
+    color: #306685;
+    background-color: #cbd6dc;
+    width: 200px;
+    text-align: center;
+    border-radius: 60px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+}
+
+#fileInfoText {
+    font-family: 'Work Sans';
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Masquer l'input de fichier */
+#photoFile {
+    display: none;
 }

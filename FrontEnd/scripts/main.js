@@ -1,22 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Debug token from session:', sessionStorage.getItem('debug_token'));
     console.log('Token from localStorage:', localStorage.getItem('token'));
     console.log('Main script loaded. Token:', localStorage.getItem('token'));
     let isAdmin = false;
     const adminBanner = document.getElementById('admin-banner');
     const openModalButtons = document.querySelectorAll('.open-modal');
-  
+
     if (window.location.search.includes('login=true')) {
-      console.log('Page loaded after login. Token:', localStorage.getItem('token'));
+        console.log('Page loaded after login. Token:', localStorage.getItem('token'));
     }
 
     // Vérification du statut d'authentification et du rôle d'administrateur
-    const token = sessionStorage.getItem('debug_token') || localStorage.getItem('token') || '';    if (token) {
+    const token = localStorage.getItem('token') || '';
+    if (token) {
         fetch('http://localhost:5678/api/works', {
             headers: {
-              'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`
             }
-          })
+        })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Not authorized');
@@ -40,14 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Récupération des travaux depuis le backend
     function recupererTravauxDepuisBackend() {
         fetch('http://localhost:5678/api/works')
-          .then(response => response.json())
-          .then(data => {
+        .then(response => response.json())
+        .then(data => {
             ajouterTravauxALaGalerie(data);
             creerMenuDeCategories(data);
-          })
-          .catch(error => {
+        })
+        .catch(error => {
             console.error('Erreur lors de la récupération des travaux :', error);
-          });
+        });
     }
 
     // Création du menu de catégories

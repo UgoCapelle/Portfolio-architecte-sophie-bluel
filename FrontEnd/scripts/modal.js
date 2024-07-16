@@ -1,68 +1,81 @@
-const openModalButton = document.getElementById('openModalButton');
-const modal = document.getElementById('modal');
-const closeModalButton = modal.querySelector('.close');
-const modalContent = modal.querySelector('.modal-content');
-console.log('Modal script loaded. Token:', localStorage.getItem('token'));
+document.addEventListener('DOMContentLoaded', () => {
+    const openModalButton = document.getElementById('openModalButton');
+    const modal = document.getElementById('modal');
+    const modalContent = modal.querySelector('.modal-content');
 
-openModalButton.addEventListener('click', () => {
-    fetch('http://localhost:5678/api/works')
-      .then(response => response.json())
-      .then(data => {
-        const travauxHTML = data.map(travail => `
-          <div class="work-item">
-            <img src="${travail.imageUrl}" alt="${travail.title}">
-            <button class="delete-button" data-id="${travail.id}">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
-        `).join('');
-  
-        modalContent.innerHTML = `
-          <h3 style="text-align: center;">Galerie Photo</h3>
-          <div class="gallery-images">${travauxHTML}</div>
-          <hr>
-          <button id="addPhotoButton">Ajouter une photo</button>
-        `;
-  
+    openModalButton.addEventListener('click', () => {
+        showGallery();
         modal.style.display = 'block';
-        const addPhotoButton = document.getElementById('addPhotoButton');
-        addPhotoButton.addEventListener('click', showAddPhotoForm);
-  
-        // Add event listeners to delete buttons
-        document.querySelectorAll('.delete-button').forEach(button => {
-          button.addEventListener('click', deleteWork);
-        });
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des travaux pour la modale :', error);
-      });
-  });
+    });
 
-closeModalButton.addEventListener('click', () => {
-    modal.style.display = 'none';
+    modal.addEventListener('click', (event) => {
+        if (event.target.classList.contains('close') || event.target === modal) {
+            closeModal();
+        }
+    });
 });
 
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-function showAddPhotoForm() {
+function showGallery() {
+    const modalContent = document.querySelector('.modal-content');
     modalContent.innerHTML = `
-        <h3 style="text-align: center;">Ajouter une photo</h3>
-        <form id="addPhotoForm">
-            <label for="photoFile">Choisir une photo</label>
-            <input type="file" id="photoFile" name="file" accept="image/*" required>
-            <label for="photoTitle">Titre de la photo</label>
-            <input type="text" id="photoTitle" name="title" required>
-            <label for="photoCategory">Catégorie</label>
-            <select id="photoCategory" name="category" required>
-            </select>
-            <button type="submit">Ajouter</button>
-        </form>
+        <span class="arrow-left"></span>
+        <span class="close">&times;</span>
+        <h3 style="text-align: center;">Galerie Photo</h3>
+        <div class="gallery-images"></div>
+        <hr>
+        <button id="addPhotoButton">Ajouter une photo</button>
     `;
 
+    const addPhotoButton = document.getElementById('addPhotoButton');
+    addPhotoButton.addEventListener('click', showAddPhotoForm);
+
+    fetch('http://localhost:5678/api/works')
+        .then(response => response.json())
+        .then(data => {
+            const travauxHTML = data.map(travail => `
+                <div class="work-item">
+                    <img src="${travail.imageUrl}" alt="${travail.title}">
+                    <button class="delete-button" data-id="${travail.id}">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            const galleryImages = document.querySelector('.gallery-images');
+            galleryImages.innerHTML = travauxHTML;
+
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', deleteWork);
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des travaux pour la modale :', error);
+        });
+}
+
+function showAddPhotoForm() {
+    const modalContent = document.querySelector('.modal-content');
+    modalContent.innerHTML = `
+        <button id="backToGalleryButton" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <span class="close">&times;</span>
+        <h3 style="text-align: center;">Ajout photo</h3>
+        <div id="rectangleZone">
+        <i class="fa-regular fa-image" id="imageIcon" style="color: #b9c5cc;"></i>
+            <button id="customFileButton">+ Ajouter Photo</button>
+            <input type="file" id="photoFile" name="file" accept="image/*" style="display: none;" required>
+            <p id="fileInfoText">jpg, png : 4mo max</p>
+        </div>
+        <form id="addPhotoForm">
+            <label for="photoTitle">Titre</label>
+            <input type="text" id="photoTitle" name="title" required>
+            <label for="photoCategory">Catégorie</label>
+            <select id="photoCategory" name="category" required></select>
+            <button type="submit">Valider</button>
+        </form>
+    `;
+  
     fetch('http://localhost:5678/api/categories')
         .then(response => response.json())
         .then(categories => {
@@ -74,92 +87,121 @@ function showAddPhotoForm() {
                 categorySelect.appendChild(option);
             });
         })
-        .catch(error => console.error('Erreur lors de la récupération des catégories :', error));
+        .catch(error => {
+            console.error('Erreur lors de la récupération des catégories :', error);
+        });
+
+    const customFileButton = document.getElementById('customFileButton');
+    const photoFileInput = document.getElementById('photoFile');
+  
+    // Déclencher le clic sur l'input file lors du clic sur le bouton
+    customFileButton.addEventListener('click', () => photoFileInput.click());
+  
+    // Gestion de l'upload du fichier sélectionné
+    photoFileInput.addEventListener('change', handleFileSelect);
 
     document.getElementById('addPhotoForm').addEventListener('submit', uploadPhoto);
+  
+    const backToGalleryButton = document.getElementById('backToGalleryButton');
+    backToGalleryButton.addEventListener('click', showGallery);
+  
+    const closeModalButton = document.querySelector('.close');
+    closeModalButton.addEventListener('click', closeModal);
 }
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        console.log("Fichier sélectionné : ", file.name);
+    }
+}
+
+
 
 function uploadPhoto(event) {
     event.preventDefault();
     const formData = new FormData();
-    formData.append('image', event.target.photoFile.files[0]);
-    formData.append('title', event.target.photoTitle.value);
-    formData.append('category', event.target.photoCategory.value);
-  
+    formData.append('image', document.getElementById('photoFile').files[0]);
+    formData.append('title', document.getElementById('photoTitle').value);
+    formData.append('category', document.getElementById('photoCategory').value);
+
     fetch('http://localhost:5678/api/works', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('debug_token')}`
-      }
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('debug_token')}`
+        }
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Photo added successfully', data);
+    .then(response => response.json())
+    .then(data => {
+        console.log('Photo ajoutée avec succès', data);
         addPhotoToGallery(data);
         addPhotoToModal(data);
-        modal.style.display = 'none';
-      })
-      .catch(error => console.error('Error adding photo:', error));
-      closeModal();
-  }
-  
-  function addPhotoToGallery(photo) {
+        closeModal();
+    })
+    .catch(error => {
+        console.error('Erreur lors de l\'ajout de la photo :', error);
+    });
+}
+
+function addPhotoToGallery(photo) {
     const gallery = document.querySelector('.gallery');
     const figure = document.createElement('figure');
     figure.dataset.id = photo.id;
     figure.innerHTML = `
-      <img src="${photo.imageUrl}" alt="${photo.title}">
-      <figcaption>${photo.title}</figcaption>
+        <img src="${photo.imageUrl}" alt="${photo.title}">
+        <figcaption>${photo.title}</figcaption>
     `;
     gallery.appendChild(figure);
-  }
-  
-  function addPhotoToModal(photo) {
+}
+
+function addPhotoToModal(photo) {
     const modalGallery = document.querySelector('.gallery-images');
     const div = document.createElement('div');
     div.className = 'work-item';
     div.dataset.id = photo.id;
     div.innerHTML = `
-      <img src="${photo.imageUrl}" alt="${photo.title}">
-      <button class="delete-button" data-id="${photo.id}">
-        <i class="fa-solid fa-trash-can"></i>
-      </button>
+        <img src="${photo.imageUrl}" alt="${photo.title}">
+        <button class="delete-button" data-id="${photo.id}">
+            <i class="fa-solid fa-trash-can"></i>
+        </button>
     `;
     modalGallery.appendChild(div);
     div.querySelector('.delete-button').addEventListener('click', deleteWork);
-  }
-  
-  function deleteWork(event) {
+}
+
+function deleteWork(event) {
     const workId = event.currentTarget.dataset.id;
     const token = sessionStorage.getItem('debug_token');
-  
-    fetch(`http://localhost:5678/api/works/${workId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        if (response.ok) {
-          removeWorkFromGallery(workId);
-          removeWorkFromModal(workId);
-        } else {
-          throw new Error('Failed to delete work');
-        }
-      })
-      .catch(error => console.error('Error deleting work:', error));
-      closeModal();
-  }
-  
-  function removeWorkFromGallery(workId) {
-    document.querySelector(`.gallery figure[data-id="${workId}"]`)?.remove();
-  }
-  
-  function removeWorkFromModal(workId) {
-    document.querySelector(`.gallery-images .work-item[data-id="${workId}"]`)?.remove();
-  }
 
-  function closeModal() {
+    fetch(`http://localhost:5678/api/works/${workId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            removeWorkFromGallery(workId);
+            removeWorkFromModal(workId);
+        } else {
+            throw new Error('Échec de la suppression du travail');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de la suppression du travail :', error);
+    });
+}
+
+function removeWorkFromGallery(workId) {
+    document.querySelector(`.gallery figure[data-id="${workId}"]`)?.remove();
+}
+
+function removeWorkFromModal(workId) {
+    document.querySelector(`.gallery-images .work-item[data-id="${workId}"]`)?.remove();
+}
+
+function closeModal() {
+    const modal = document.getElementById('modal');
     modal.style.display = 'none';
-  }
+}

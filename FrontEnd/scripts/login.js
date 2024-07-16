@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 localStorage.setItem("token", responseData.token);
                 localStorage.setItem("tokenSetTime", new Date().toISOString());
                 console.log("Token saved in localStorage:", localStorage.getItem("token"));
-                sessionStorage.setItem('debug_token', responseData.token);
                 window.location.href = "index.html?login=true";
             } else {
                 switch (response.status) {
