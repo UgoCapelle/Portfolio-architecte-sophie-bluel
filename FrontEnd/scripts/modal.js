@@ -3,11 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
 
+    
     openModalButton.addEventListener('click', () => {
         showGallery();
         modal.style.display = 'block';
     });
 
+    
     modal.addEventListener('click', (event) => {
         if (event.target.classList.contains('close') || event.target === modal) {
             closeModal();
@@ -62,10 +64,11 @@ function showAddPhotoForm() {
         <span class="close">&times;</span>
         <h3 style="text-align: center;">Ajout photo</h3>
         <div id="rectangleZone">
-        <i class="fa-regular fa-image" id="imageIcon" style="color: #b9c5cc;"></i>
+            <i class="fa-regular fa-image" id="imageIcon" style="color: #b9c5cc;"></i>
             <button id="customFileButton">+ Ajouter Photo</button>
             <input type="file" id="photoFile" name="file" accept="image/*" style="display: none;" required>
             <p id="fileInfoText">jpg, png : 4mo max</p>
+            <div id="previewZone" style="display: none;"></div>
         </div>
         <form id="addPhotoForm">
             <label for="photoTitle">Titre</label>
@@ -75,7 +78,7 @@ function showAddPhotoForm() {
             <button type="submit">Valider</button>
         </form>
     `;
-  
+
     fetch('http://localhost:5678/api/categories')
         .then(response => response.json())
         .then(categories => {
@@ -94,10 +97,10 @@ function showAddPhotoForm() {
     const customFileButton = document.getElementById('customFileButton');
     const photoFileInput = document.getElementById('photoFile');
   
-    // Déclencher le clic sur l'input file lors du clic sur le bouton
+    
     customFileButton.addEventListener('click', () => photoFileInput.click());
   
-    // Gestion de l'upload du fichier sélectionné
+    
     photoFileInput.addEventListener('change', handleFileSelect);
 
     document.getElementById('addPhotoForm').addEventListener('submit', uploadPhoto);
@@ -111,19 +114,39 @@ function showAddPhotoForm() {
 
 function handleFileSelect(event) {
     const file = event.target.files[0];
+    const previewZone = document.getElementById('previewZone');
+    const rectangleZone = document.getElementById('rectangleZone');
+
     if (file) {
-        console.log("Fichier sélectionné : ", file.name);
+        
+        const imageURL = URL.createObjectURL(file);
+
+        
+        document.getElementById('imageIcon').style.display = 'none';
+        document.getElementById('customFileButton').style.display = 'none';
+        document.getElementById('fileInfoText').style.display = 'none';
+
+        
+        previewZone.innerHTML = `<img src="${imageURL}" style="max-height: 100%; max-width: 100%; object-fit: contain;">`;
+        previewZone.style.display = 'block';
     }
 }
 
-
-
 function uploadPhoto(event) {
     event.preventDefault();
+    const photoFileInput = document.getElementById('photoFile');
+    const photoTitleInput = document.getElementById('photoTitle');
+    const photoCategorySelect = document.getElementById('photoCategory');
+
+    if (!photoFileInput.files.length) {
+        console.error('Aucun fichier sélectionné.');
+        return;
+    }
+
     const formData = new FormData();
-    formData.append('image', document.getElementById('photoFile').files[0]);
-    formData.append('title', document.getElementById('photoTitle').value);
-    formData.append('category', document.getElementById('photoCategory').value);
+    formData.append('image', photoFileInput.files[0]);
+    formData.append('title', photoTitleInput.value);
+    formData.append('category', photoCategorySelect.value);
 
     fetch('http://localhost:5678/api/works', {
         method: 'POST',
@@ -153,6 +176,29 @@ function addPhotoToGallery(photo) {
         <figcaption>${photo.title}</figcaption>
     `;
     gallery.appendChild(figure);
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const previewZone = document.getElementById('previewZone');
+    const rectangleZone = document.getElementById('rectangleZone');
+    const imageIcon = document.getElementById('imageIcon');
+    const customFileButton = document.getElementById('customFileButton');
+    const fileInfoText = document.getElementById('fileInfoText');
+
+    if (file) {
+       
+        const imageURL = URL.createObjectURL(file);
+
+        
+        imageIcon.classList.add('hidden');
+        customFileButton.classList.add('hidden');
+        fileInfoText.classList.add('hidden');
+
+        
+        previewZone.innerHTML = `<img src="${imageURL}" alt="Preview">`;
+        previewZone.style.display = 'flex';
+    }
 }
 
 function addPhotoToModal(photo) {
