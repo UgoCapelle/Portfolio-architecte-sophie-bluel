@@ -3,13 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    
     openModalButton.addEventListener('click', () => {
         showGallery();
         modal.style.display = 'block';
     });
 
-    
     modal.addEventListener('click', (event) => {
         if (event.target.classList.contains('close') || event.target === modal) {
             closeModal();
@@ -98,17 +96,18 @@ function showAddPhotoForm() {
     const customFileButton = document.getElementById('customFileButton');
     const photoFileInput = document.getElementById('photoFile');
   
-    
-    customFileButton.addEventListener('click', () => photoFileInput.click());
   
     
+
+    
+    customFileButton.addEventListener('click', () => photoFileInput.click());
     photoFileInput.addEventListener('change', handleFileSelect);
 
     document.getElementById('addPhotoForm').addEventListener('submit', uploadPhoto);
-  
+
     const backToGalleryButton = document.getElementById('backToGalleryButton');
     backToGalleryButton.addEventListener('click', showGallery);
-  
+
     const closeModalButton = document.querySelector('.close');
     closeModalButton.addEventListener('click', closeModal);
 }
@@ -117,19 +116,19 @@ function handleFileSelect(event) {
     const file = event.target.files[0];
     const previewZone = document.getElementById('previewZone');
     const rectangleZone = document.getElementById('rectangleZone');
+    const imageIcon = document.getElementById('imageIcon');
+    const customFileButton = document.getElementById('customFileButton');
+    const fileInfoText = document.getElementById('fileInfoText');
 
     if (file) {
-        
         const imageURL = URL.createObjectURL(file);
 
-        
-        document.getElementById('imageIcon').style.display = 'none';
-        document.getElementById('customFileButton').style.display = 'none';
-        document.getElementById('fileInfoText').style.display = 'none';
+        imageIcon.classList.add('hidden');
+        customFileButton.classList.add('hidden');
+        fileInfoText.classList.add('hidden');
 
-        
-        previewZone.innerHTML = `<img src="${imageURL}" style="max-height: 100%; max-width: 100%; object-fit: contain;">`;
-        previewZone.style.display = 'block';
+        previewZone.innerHTML = `<img src="${imageURL}" alt="Preview">`;
+        previewZone.style.display = 'flex';
     }
 }
 
@@ -153,7 +152,7 @@ function uploadPhoto(event) {
         method: 'POST',
         body: formData,
         headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('debug_token')}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
     .then(response => response.json())
@@ -219,7 +218,7 @@ function addPhotoToModal(photo) {
 
 function deleteWork(event) {
     const workId = event.currentTarget.dataset.id;
-    const token = sessionStorage.getItem('debug_token');
+    const token = localStorage.getItem('token');
 
     fetch(`http://localhost:5678/api/works/${workId}`, {
         method: 'DELETE',
