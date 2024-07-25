@@ -3,16 +3,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
 
+
+    modal.style.display = 'none';
+
     openModalButton.addEventListener('click', () => {
+        console.log('Bouton d\'ouverture de la modale cliqué');
         showGallery();
         modal.style.display = 'block';
     });
 
     modal.addEventListener('click', (event) => {
         if (event.target.classList.contains('close') || event.target === modal) {
+            console.log('Fermeture de la modale');
             closeModal();
         }
     });
+
+    const observer = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                console.log('Changement de style détecté :', modal.style.display);
+            }
+        }
+    });
+    observer.observe(modal, { attributes: true });
 });
 
 function showGallery() {
@@ -95,11 +109,6 @@ function showAddPhotoForm() {
 
     const customFileButton = document.getElementById('customFileButton');
     const photoFileInput = document.getElementById('photoFile');
-  
-  
-    
-
-    
     customFileButton.addEventListener('click', () => photoFileInput.click());
     photoFileInput.addEventListener('change', handleFileSelect);
 
@@ -178,29 +187,6 @@ function addPhotoToGallery(photo) {
     gallery.appendChild(figure);
 }
 
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const previewZone = document.getElementById('previewZone');
-    const rectangleZone = document.getElementById('rectangleZone');
-    const imageIcon = document.getElementById('imageIcon');
-    const customFileButton = document.getElementById('customFileButton');
-    const fileInfoText = document.getElementById('fileInfoText');
-
-    if (file) {
-       
-        const imageURL = URL.createObjectURL(file);
-
-        
-        imageIcon.classList.add('hidden');
-        customFileButton.classList.add('hidden');
-        fileInfoText.classList.add('hidden');
-
-        
-        previewZone.innerHTML = `<img src="${imageURL}" alt="Preview">`;
-        previewZone.style.display = 'flex';
-    }
-}
-
 function addPhotoToModal(photo) {
     const modalGallery = document.querySelector('.gallery-images');
     const div = document.createElement('div');
@@ -230,6 +216,7 @@ function deleteWork(event) {
         if (response.ok) {
             removeWorkFromGallery(workId);
             removeWorkFromModal(workId);
+            closeModal();
         } else {
             throw new Error('Échec de la suppression du travail');
         }

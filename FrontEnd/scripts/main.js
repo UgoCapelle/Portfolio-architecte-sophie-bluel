@@ -2,14 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminBanner = document.getElementById('admin-banner');
     const openModalButton = document.getElementById('openModalButton');
     const loginLink = document.getElementById('loginLink');
+    const filters = document.getElementById('filters'); 
 
     function updateAdminElementsVisibility() {
         const token = localStorage.getItem('token');
 
         if (token) {
-            // Token is present, show the admin elements
+            // Token present = show
             adminBanner.style.display = 'block';
             openModalButton.style.display = 'inline';
+            filters.style.display = 'none'; 
             loginLink.textContent = 'logout';
             loginLink.classList.add('lilogin');
             loginLink.href = '#';
@@ -19,16 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 location.reload();
             });
         } else {
-            // Token is absent, hide the admin elements
+            // Token absent = hide 
             adminBanner.style.display = 'none';
             openModalButton.style.display = 'none';
+            filters.style.display = 'flex';
         }
     }
 
-    // Initial check
+    // check
     updateAdminElementsVisibility();
 
-    // Fetch works from the backend and populate the gallery
+    // Fetch works
     function fetchWorksFromBackend() {
         fetch('http://localhost:5678/api/works')
             .then(response => response.json())
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filters.querySelector('li').classList.add('bouton-active');
     }
 
-    // Filter works by category
+    // Filter 
     function filterWorks(category, works) {
         const gallery = document.querySelector('#portfolio .gallery');
         gallery.innerHTML = '';
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`.filtres .boutons:contains(${category})`).classList.add('bouton-active');
     }
 
-    // Add works to gallery
+    // Add works 
     function addWorksToGallery(works) {
         const gallery = document.querySelector('#portfolio .gallery');
         works.forEach(work => {
@@ -95,6 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial fetch of works
+    
     fetchWorksFromBackend();
 });

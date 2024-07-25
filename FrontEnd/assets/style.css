@@ -381,7 +381,7 @@ body.login-page footer {
 }
 
 .title-container h2 {
-    margin-right: 10px; /* Espace entre le titre et le bouton */
+    margin-right: 10px; 
 }
 
 #openModalButton {
@@ -556,6 +556,7 @@ hr {
 #addPhotoForm label {
     margin: 10px 0 5px;
     text-align: left;
+    display: block;
 }
 
 #addPhotoForm input, #addPhotoForm select, #addPhotoForm button {
