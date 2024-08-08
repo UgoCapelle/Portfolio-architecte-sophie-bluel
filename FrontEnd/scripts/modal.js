@@ -1,34 +1,35 @@
+// Écouteur d'événements qui se déclenche lorsque le DOM est complètement chargé.
 document.addEventListener('DOMContentLoaded', () => {
     const openModalButton = document.getElementById('openModalButton');
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
 
+    modal.style.display = 'none'; // Cache le modal au chargement initial.
 
-    modal.style.display = 'none';
-
+    // Écouteur pour ouvrir le modal.
     openModalButton.addEventListener('click', () => {
-        console.log('Bouton d\'ouverture de la modale cliqué');
-        showGallery();
-        modal.style.display = 'block';
+        showGallery(); // Affiche la galerie dans le modal.
+        modal.style.display = 'block'; // Affiche le modal.
     });
 
+    // Écouteur pour fermer le modal lorsque l'on clique sur la croix ou l'extérieur du modal.
     modal.addEventListener('click', (event) => {
         if (event.target.classList.contains('close') || event.target === modal) {
-            console.log('Fermeture de la modale');
             closeModal();
         }
     });
 
-    const observer = new MutationObserver((mutationsList) => {
+    // Observe les changements d'attributs sur le modal pour les logs.
+    new MutationObserver((mutationsList) => {
         for (let mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
                 console.log('Changement de style détecté :', modal.style.display);
             }
         }
-    });
-    observer.observe(modal, { attributes: true });
+    }).observe(modal, { attributes: true });
 });
 
+// Fonction pour afficher la galerie dans le modal.
 function showGallery() {
     const modalContent = document.querySelector('.modal-content');
     modalContent.innerHTML = `
@@ -40,8 +41,7 @@ function showGallery() {
         <button id="addPhotoButton">Ajouter une photo</button>
     `;
 
-    const addPhotoButton = document.getElementById('addPhotoButton');
-    addPhotoButton.addEventListener('click', showAddPhotoForm);
+    document.getElementById('addPhotoButton').addEventListener('click', showAddPhotoForm);
 
     fetch('http://localhost:5678/api/works')
         .then(response => response.json())
@@ -54,19 +54,20 @@ function showGallery() {
                     </button>
                 </div>
             `).join('');
+            modalContent.querySelector('.gallery-images').innerHTML = travauxHTML;
 
-            const galleryImages = document.querySelector('.gallery-images');
-            galleryImages.innerHTML = travauxHTML;
-
-            document.querySelectorAll('.delete-button').forEach(button => {
-                button.addEventListener('click', deleteWork);
+            // Ajout des écouteurs d'événements pour les boutons de suppression
+            modalContent.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const workId = event.currentTarget.dataset.id;
+                    deleteWork(workId);
+                });
             });
         })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des travaux pour la modale :', error);
-        });
+        .catch(error => console.error('Error fetching works:', error));
 }
 
+// Fonction pour afficher le formulaire d'ajout de photo dans le modal.
 function showAddPhotoForm() {
     const modalContent = document.querySelector('.modal-content');
     modalContent.innerHTML = `
@@ -92,6 +93,7 @@ function showAddPhotoForm() {
         </form>
     `;
 
+    // Récupère les catégories depuis le backend pour le sélecteur du formulaire.
     fetch('http://localhost:5678/api/categories')
         .then(response => response.json())
         .then(categories => {
@@ -107,20 +109,24 @@ function showAddPhotoForm() {
             console.error('Erreur lors de la récupération des catégories :', error);
         });
 
+    // Configuration du bouton de sélection de fichier et de la prévisualisation.
     const customFileButton = document.getElementById('customFileButton');
     const photoFileInput = document.getElementById('photoFile');
     customFileButton.addEventListener('click', () => photoFileInput.click());
     photoFileInput.addEventListener('change', handleFileSelect);
 
+    // Configuration du formulaire d'ajout de photo.
     document.getElementById('addPhotoForm').addEventListener('submit', uploadPhoto);
 
-    const backToGalleryButton = document.getElementById('backToGalleryButton');
-    backToGalleryButton.addEventListener('click', showGallery);
+    // Écouteur pour revenir à la galerie depuis le formulaire d'ajout.
+    document.getElementById('backToGalleryButton').addEventListener('click', showGallery);
 
+    // Écouteur pour fermer le modal.
     const closeModalButton = document.querySelector('.close');
     closeModalButton.addEventListener('click', closeModal);
 }
 
+// Fonction pour gérer la sélection de fichiers et afficher un aperçu.
 function handleFileSelect(event) {
     const file = event.target.files[0];
     const previewZone = document.getElementById('previewZone');
@@ -141,6 +147,7 @@ function handleFileSelect(event) {
     }
 }
 
+// Fonction pour envoyer la photo au serveur et ajouter l'œuvre à la galerie et au modal.
 function uploadPhoto(event) {
     event.preventDefault();
     const photoFileInput = document.getElementById('photoFile');
@@ -157,6 +164,7 @@ function uploadPhoto(event) {
     formData.append('title', photoTitleInput.value);
     formData.append('category', photoCategorySelect.value);
 
+    // Envoi des données du formulaire au serveur.
     fetch('http://localhost:5678/api/works', {
         method: 'POST',
         body: formData,
@@ -167,15 +175,16 @@ function uploadPhoto(event) {
     .then(response => response.json())
     .then(data => {
         console.log('Photo ajoutée avec succès', data);
-        addPhotoToGallery(data);
-        addPhotoToModal(data);
-        closeModal();
+        addPhotoToGallery(data); // Ajoute la photo à la galerie principale.
+        addPhotoToModal(data); // Ajoute la photo au modal.
+        closeModal(); // Ferme le modal après ajout.
     })
     .catch(error => {
         console.error('Erreur lors de l\'ajout de la photo :', error);
     });
 }
 
+// Fonction pour ajouter une photo à la galerie principale.
 function addPhotoToGallery(photo) {
     const gallery = document.querySelector('.gallery');
     const figure = document.createElement('figure');
@@ -187,6 +196,7 @@ function addPhotoToGallery(photo) {
     gallery.appendChild(figure);
 }
 
+// Fonction pour ajouter une photo à la galerie dans le modal.
 function addPhotoToModal(photo) {
     const modalGallery = document.querySelector('.gallery-images');
     const div = document.createElement('div');
@@ -199,41 +209,44 @@ function addPhotoToModal(photo) {
         </button>
     `;
     modalGallery.appendChild(div);
-    div.querySelector('.delete-button').addEventListener('click', deleteWork);
+    div.querySelector('.delete-button').addEventListener('click', (event) => {
+        const workId = event.currentTarget.dataset.id;
+        deleteWork(workId); // Supprime l'œuvre au clic du bouton de suppression.
+    });
 }
 
-function deleteWork(event) {
-    const workId = event.currentTarget.dataset.id;
-    const token = localStorage.getItem('token');
-
+// Fonction pour supprimer une œuvre du serveur.
+function deleteWork(workId) {
     fetch(`http://localhost:5678/api/works/${workId}`, {
         method: 'DELETE',
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
     })
     .then(response => {
         if (response.ok) {
             removeWorkFromGallery(workId);
             removeWorkFromModal(workId);
-            closeModal();
+            console.log(`Work with ID ${workId} deleted.`);
+            closeModal(); // Ajout de cette ligne
         } else {
-            throw new Error('Échec de la suppression du travail');
+            console.error(`Failed to delete work with ID ${workId}.`);
         }
     })
-    .catch(error => {
-        console.error('Erreur lors de la suppression du travail :', error);
-    });
+    .catch(error => console.error('Error deleting work:', error));
 }
 
+// Fonction pour supprimer une œuvre de la galerie principale.
 function removeWorkFromGallery(workId) {
     document.querySelector(`.gallery figure[data-id="${workId}"]`)?.remove();
 }
 
+// Fonction pour supprimer une œuvre de la galerie dans le modal.
 function removeWorkFromModal(workId) {
     document.querySelector(`.gallery-images .work-item[data-id="${workId}"]`)?.remove();
 }
 
+// Fonction pour fermer le modal.
 function closeModal() {
     const modal = document.getElementById('modal');
     modal.style.display = 'none';
