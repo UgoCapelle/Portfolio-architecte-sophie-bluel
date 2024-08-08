@@ -1,4 +1,4 @@
-// Lance que si le dom est chargé
+// Écouteur d'événements qui se déclenche lorsque le DOM est complètement chargé.
 document.addEventListener('DOMContentLoaded', () => {
     // Sélection des éléments du DOM
     const adminBanner = document.getElementById('admin-banner');
@@ -30,14 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fonction pour récupérer les œuvres depuis le backend.
-    function fetchWorksFromBackend() {
-        fetch('http://localhost:5678/api/works')
-            .then(response => response.json())
-            .then(data => {
-                addWorksToGallery(data); // Ajoute les œuvres à la galerie.
-                createCategoryMenu(data); // Crée le menu des catégories.
-            })
-            .catch(error => console.error('Error fetching works:', error));
+    async function fetchWorksFromBackend() {
+        try {
+            const response = await fetch('http://localhost:5678/api/works');
+            const data = await response.json();
+            addWorksToGallery(data); // Ajoute les œuvres à la galerie.
+            createCategoryMenu(data); // Crée le menu des catégories.
+        } catch (error) {
+            console.error('Error fetching works:', error);
+        }
     }
 
     // Fonction pour créer un menu de filtre.

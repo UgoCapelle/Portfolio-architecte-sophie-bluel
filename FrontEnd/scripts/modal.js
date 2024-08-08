@@ -4,22 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    modal.style.display = 'none'; // Cache le modal au chargement initial.
+    modal.style.display = 'none'; // Cache la modal au chargement initial.
 
-    // Écouteur pour ouvrir le modal.
+    // Écouteur pour ouvrir la modale.
     openModalButton.addEventListener('click', () => {
-        showGallery(); // Affiche la galerie dans le modal.
-        modal.style.display = 'block'; // Affiche le modal.
+        showGallery(); // Affiche la galerie dans la modale.
+        modal.style.display = 'block'; // Affiche la modale.
     });
 
-    // Écouteur pour fermer le modal lorsque l'on clique sur la croix ou l'extérieur du modal.
+    // Écouteur pour fermer la modale lorsque l'on clique sur la croix ou l'extérieur du modal.
     modal.addEventListener('click', (event) => {
         if (event.target.classList.contains('close') || event.target === modal) {
             closeModal();
         }
     });
 
-    // Observe les changements d'attributs sur le modal pour les logs.
+    // Observe les changements d'attributs sur la modale pour les logs.
     new MutationObserver((mutationsList) => {
         for (let mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }).observe(modal, { attributes: true });
 });
 
-// Fonction pour afficher la galerie dans le modal.
-function showGallery() {
+// Fonction pour afficher la galerie dans la modale.
+async function showGallery() {
     const modalContent = document.querySelector('.modal-content');
     modalContent.innerHTML = `
         <span class="arrow-left"></span>
@@ -43,32 +43,34 @@ function showGallery() {
 
     document.getElementById('addPhotoButton').addEventListener('click', showAddPhotoForm);
 
-    fetch('http://localhost:5678/api/works')
-        .then(response => response.json())
-        .then(data => {
-            const travauxHTML = data.map(travail => `
-                <div class="work-item">
-                    <img src="${travail.imageUrl}" alt="${travail.title}">
-                    <button class="delete-button" data-id="${travail.id}">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </div>
-            `).join('');
-            modalContent.querySelector('.gallery-images').innerHTML = travauxHTML;
+    try {
+        const response = await fetch('http://localhost:5678/api/works');
+        const data = await response.json();
+        const travauxHTML = data.map(travail => `
+            <div class="work-item">
+                <img src="${travail.imageUrl}" alt="${travail.title}">
+                <button class="delete-button" data-id="${travail.id}">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        `).join('');
+        modalContent.querySelector('.gallery-images').innerHTML = travauxHTML;
 
-            // Ajout des écouteurs d'événements pour les boutons de suppression
-            modalContent.querySelectorAll('.delete-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const workId = event.currentTarget.dataset.id;
-                    deleteWork(workId);
-                });
+        // Ajout des écouteurs d'événements pour les boutons de suppression
+        modalContent.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const workId = event.currentTarget.dataset.id;
+                deleteWork(workId);
             });
-        })
-        .catch(error => console.error('Error fetching works:', error));
+        });
+    } catch (error) {
+        console.error('Error fetching works:', error);
+    }
 }
 
-// Fonction pour afficher le formulaire d'ajout de photo dans le modal.
-function showAddPhotoForm() {
+
+// Fonction pour afficher le formulaire d'ajout de photo dans la modale.
+async function showAddPhotoForm() {
     const modalContent = document.querySelector('.modal-content');
     modalContent.innerHTML = `
         <button id="backToGalleryButton" class="back-button">
@@ -93,21 +95,19 @@ function showAddPhotoForm() {
         </form>
     `;
 
-    // Récupère les catégories depuis le backend pour le sélecteur du formulaire.
-    fetch('http://localhost:5678/api/categories')
-        .then(response => response.json())
-        .then(categories => {
-            const categorySelect = document.getElementById('photoCategory');
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category.id;
-                option.textContent = category.name;
-                categorySelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des catégories :', error);
+    try {
+        const response = await fetch('http://localhost:5678/api/categories');
+        const categories = await response.json();
+        const categorySelect = document.getElementById('photoCategory');
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
         });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des catégories :', error);
+    }
 
     // Configuration du bouton de sélection de fichier et de la prévisualisation.
     const customFileButton = document.getElementById('customFileButton');
@@ -121,7 +121,7 @@ function showAddPhotoForm() {
     // Écouteur pour revenir à la galerie depuis le formulaire d'ajout.
     document.getElementById('backToGalleryButton').addEventListener('click', showGallery);
 
-    // Écouteur pour fermer le modal.
+    // Écouteur pour fermer la modale.
     const closeModalButton = document.querySelector('.close');
     closeModalButton.addEventListener('click', closeModal);
 }
